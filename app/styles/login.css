@@ -1,0 +1,94 @@
+.login-container {
+  width: 60%;
+  height: 65%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px,
+    rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px,
+    rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+  gap: 20px;
+  padding: 5px;
+}
+
+.login-header {
+  display: flex;
+  width: 100%;
+  height: 30%;
+  text-align: center;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.login-header > h1 {
+  color: #107cf1;
+  font-size: 35px;
+  font-weight: 400;
+  flex: 2;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 30px;
+  margin-right: 90px;
+}
+
+.login-form {
+  display: flex;
+  width: 90%;
+  height: 80%;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.login-form > form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 60px;
+  flex: 2;
+  margin-bottom: 35px;
+}
+
+.for-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: start;
+}
+
+.for-login-form > input {
+  width: 100%;
+  border: 2px solid #107cf1;
+  padding: 5px;
+  padding-left: 9px;
+  border-radius: 10px;
+  color: #107cf1;
+}
+
+.for-login-form > input:hover {
+  width: 100%;
+  border: 2px solid #107cf1;
+  padding: 5px;
+  padding-left: 9px;
+  color: #107cf1;
+}
+
+.login-btn {
+  border: 1px solid #107cf1;
+  border-radius: 10px;
+  width: 50%;
+  background-color: #107cf1;
+  color: white;
+  padding: 6px;
+  cursor: pointer;
+  transition: 0.2s ease-in;
+}
+
+.login-btn:hover {
+  background-color: white;
+  color: #107cf1;
+  transition: 0.2s ease-in;
+}
