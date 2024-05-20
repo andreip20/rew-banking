@@ -1,6 +1,6 @@
 .login-container {
-  width: 60%;
-  height: 65%;
+  width: 65%;
+  height: 80%;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -56,7 +56,7 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 .for-login-form > input {
