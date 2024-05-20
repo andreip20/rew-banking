@@ -35,7 +35,7 @@ const ChatWindow = ({ user, contact }) => {
 
     return () => {
       socket.off("receiveMessage");
-      socket.disconnect(); // Disconnect from the socket server when the component unmounts
+      socket.disconnect();
     };
   }, [user.id, contact.id]);
 
@@ -47,7 +47,7 @@ const ChatWindow = ({ user, contact }) => {
       content: newMessage,
     };
 
-    socket.emit("sendMessage", message); // Emit the message to the socket server
+    socket.emit("sendMessage", message);
     await axios.post("/api/messages/send", message);
 
     setMessages((prevMessages) => [...prevMessages, message]);

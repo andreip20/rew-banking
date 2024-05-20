@@ -15,38 +15,32 @@ const transporter = nodemailer.createTransport({
 
 export async function POST(req) {
   if (req.method === "POST") {
-    const { email } = await req.json(); // Parsing JSON body for NextRequest
+    const { email } = await req.json();
 
     try {
-      // Check if user exists in the database
       const results = await query("SELECT * FROM users WHERE email = ?", [
         email,
       ]);
 
       if (results.length === 0) {
-        // No user found with the provided email
         return new NextResponse(JSON.stringify({ error: "User not found" }), {
           status: 404,
         });
       }
 
-      // Generate reset token
       const resetToken = crypto.randomBytes(20).toString("hex");
 
-      // Simulate updating user with reset token
       const updateResults = await query(
         "UPDATE users SET reset_token = ? WHERE email = ?",
         [resetToken, email]
       );
 
       if (updateResults.affectedRows === 0) {
-        // No update performed, user not found
         return new NextResponse(JSON.stringify({ error: "User not found" }), {
           status: 404,
         });
       }
 
-      // Send password reset email
       const resetLink = `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password?token=${resetToken}`;
       await transporter.sendMail({
         from: "your_email_address",
@@ -68,7 +62,6 @@ export async function POST(req) {
       );
     }
   } else {
-    // Method Not Allowed
     const response = new NextResponse(`Method ${req.method} Not Allowed`, {
       status: 405,
     });

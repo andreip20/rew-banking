@@ -29,6 +29,18 @@ export async function POST(req) {
 
     const receiver_id = receiver.id;
 
+    const [existingContact] = await query(
+      "SELECT * FROM contacts WHERE (user_id = ? AND contact_id = ?) OR (user_id = ? AND contact_id = ?)",
+      [sender_id, receiver_id, receiver_id, sender_id]
+    );
+
+    if (existingContact) {
+      return new NextResponse(
+        JSON.stringify({ error: "Users are already contacts" }),
+        { status: 400 }
+      );
+    }
+
     const [existingInvitation] = await query(
       "SELECT * FROM invitations WHERE sender_id = ? AND receiver_id = ? AND status = 'pending'",
       [sender_id, receiver_id]

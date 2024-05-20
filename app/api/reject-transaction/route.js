@@ -39,12 +39,10 @@ export async function POST(req) {
     const { type } = transaction;
 
     if (type === "deposit") {
-      // Update transaction status to 'rejected'
       await query("UPDATE transactions SET status = 'rejected' WHERE id = ?", [
         transactionId,
       ]);
     } else if (type === "request") {
-      // No change in balances, only update status to 'rejected'
       await query("UPDATE transactions SET status = 'rejected' WHERE id = ?", [
         transactionId,
       ]);

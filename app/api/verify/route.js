@@ -7,7 +7,6 @@ export async function GET(req) {
     try {
       const token = req.nextUrl.searchParams.get("token");
 
-      // Find user by verification token
       const results = await query(
         "SELECT * FROM users WHERE verification_token = ?",
         [token]
@@ -23,7 +22,6 @@ export async function GET(req) {
         );
       }
 
-      // Update user status to verified
       const user = results[0];
       await query("UPDATE users SET verified = ? WHERE id = ?", [
         true,
@@ -48,7 +46,6 @@ export async function GET(req) {
       );
     }
   } else {
-    // Method Not Allowed
     return new NextResponse(`Method ${req.method} Not Allowed`, {
       status: 405,
       headers: { Allow: ["GET"] },

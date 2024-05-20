@@ -27,21 +27,20 @@ export default function ResetPasswordPage() {
     if (token) {
       verifyToken(token);
     } else {
-      setIsLoading(false); // If there's no token, we're not loading
+      setIsLoading(false);
     }
   }, [token]);
 
   const verifyToken = async (token) => {
-    setIsLoading(true); // Set loading to true when starting verification
+    setIsLoading(true);
     try {
-      // Assume resetPassword function correctly sets the validity of the token
       const isValid = await resetPassword(token);
       setValidToken(isValid);
     } catch (error) {
       console.error("Error verifying token:", error);
       setValidToken(false);
     } finally {
-      setIsLoading(false); // Ensure loading is false after verification attempt
+      setIsLoading(false);
     }
   };
 
@@ -79,7 +78,6 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    // Password validation rules
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 

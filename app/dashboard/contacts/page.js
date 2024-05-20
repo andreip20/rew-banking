@@ -18,9 +18,11 @@ const ContactsPage = () => {
         const response = await axios.post("/api/get-user-info", { token });
         setUser(response.data);
         return response.data.id;
-      } catch (error) {
-        console.error("Error fetching user info", error);
-        return null;
+      } catch (err) {
+        const errorMessage = err.response.data.error
+          ? err.response.data.error
+          : "An error occurred. Please try again later.";
+        toast.error(errorMessage);
       }
     };
 
@@ -34,8 +36,11 @@ const ContactsPage = () => {
         } else {
           setContacts(contactsData);
         }
-      } catch (error) {
-        console.error("Error fetching contacts", error);
+      } catch (err) {
+        const errorMessage = err.response.data.error
+          ? err.response.data.error
+          : "An error occurred. Please try again later.";
+        toast.error(errorMessage);
       }
     };
 
@@ -45,8 +50,11 @@ const ContactsPage = () => {
           user_id: userId,
         });
         setPendingInvitations(response.data.invitations.length);
-      } catch (error) {
-        console.error("Error fetching pending invitations", error);
+      } catch (err) {
+        const errorMessage = err.response.data.error
+          ? err.response.data.error
+          : "An error occurred. Please try again later.";
+        toast.error(errorMessage);
       }
     };
 

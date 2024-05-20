@@ -151,7 +151,6 @@ const RegistrationForm = () => {
     }
 
     sendUserData(formData);
-    console.log("submitted");
   };
 
   return (

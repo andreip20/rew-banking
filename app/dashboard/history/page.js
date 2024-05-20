@@ -58,8 +58,10 @@ const History = () => {
         throw new Error("Unable to retrieve user information.");
       }
     } catch (err) {
-      console.error("Error fetching transactions:", err);
-      toast.error("Error fetching transactions.");
+      const errorMessage = err.response.data.error
+        ? err.response.data.error
+        : "An error occurred. Please try again later.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

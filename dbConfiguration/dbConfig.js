@@ -21,7 +21,7 @@ const connection = mysql2.createPool({
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
   waitForConnections: true,
-  connectionLimit: 100,
+  connectionLimit: 1000,
   queueLimit: 0,
 });
 

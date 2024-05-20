@@ -16,14 +16,14 @@ const roboto = Roboto({
 function AccountPage() {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState({});
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getUserInformationFromToken();
   }, []);
 
   async function getUserInformationFromToken() {
-    setLoading(true); // Start loading before the API request
+    setLoading(true);
     try {
       if (isAuthenticated()) {
         const token = Cookies.get("token");
@@ -40,7 +40,7 @@ function AccountPage() {
         err.response ? err.response.data.error : err.message
       );
     } finally {
-      setLoading(false); // Stop loading after the API request is done
+      setLoading(false);
     }
   }
 

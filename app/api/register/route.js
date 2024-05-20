@@ -5,7 +5,6 @@ import nodemailer from "nodemailer";
 import crypto from "crypto";
 import query from "../../query";
 
-// Assuming nodemailer is already Promise-friendly
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_SERVICE,
   port: process.env.EMAIL_PORT,
@@ -23,7 +22,6 @@ export async function POST(request) {
   const { username, firstName, lastName, phoneNumber, email, password } =
     await request.json();
 
-  // Perform necessary checks on the data
   if (
     !username ||
     !firstName ||
@@ -39,7 +37,6 @@ export async function POST(request) {
   }
 
   try {
-    // Check if email already exists
     let results = await query("SELECT * FROM users WHERE email = ?", [email]);
     if (results.length > 0) {
       return NextResponse.json(
@@ -48,7 +45,6 @@ export async function POST(request) {
       );
     }
 
-    // Check if username already exists
     results = await query("SELECT * FROM users WHERE username = ?", [username]);
     if (results.length > 0) {
       return NextResponse.json(
@@ -57,13 +53,10 @@ export async function POST(request) {
       );
     }
 
-    // Generate verification token
     const verificationToken = crypto.randomBytes(20).toString("hex");
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert user into the database
     await query(
       "INSERT INTO users (username, first_name, last_name, phone_number, email, password, verification_token) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [
@@ -77,7 +70,6 @@ export async function POST(request) {
       ]
     );
 
-    // Send verification email
     const verificationLink = `${process.env.NEXT_PUBLIC_BASE_URL}/api/verify?token=${verificationToken}`;
     await transporter.sendMail({
       from: "your_email_address",

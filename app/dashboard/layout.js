@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }) {
   }, [router]);
 
   if (loading) {
-    return <div>Loading...</div>; // Or a custom loading component/spinner
+    return <div>Loading...</div>;
   }
 
   return (

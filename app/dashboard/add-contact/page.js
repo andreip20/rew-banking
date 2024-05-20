@@ -15,8 +15,11 @@ const AddContactPage = () => {
         const token = Cookies.get("token");
         const response = await axios.post("/api/get-user-info", { token });
         setUser(response.data);
-      } catch (error) {
-        console.error("Error fetching user info", error);
+      } catch (err) {
+        const errorMessage = err.response.data.error
+          ? err.response.data.error
+          : "An error occurred. Please try again later.";
+        toast.error(errorMessage);
       }
     };
 
@@ -31,9 +34,12 @@ const AddContactPage = () => {
         receiver_username: contactUsername,
       });
       setContactUsername("");
-      router.push("/dashboard/contacts"); // Redirect to contacts page after sending the invitation
-    } catch (error) {
-      console.error("Error sending invitation", error);
+      router.push("/dashboard/contacts");
+    } catch (err) {
+      const errorMessage = err.response.data.error
+        ? err.response.data.error
+        : "An error occurred. Please try again later.";
+      toast.error(errorMessage);
     }
   };
 

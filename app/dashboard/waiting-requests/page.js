@@ -16,8 +16,11 @@ const WaitingRequestsPage = () => {
         const response = await axios.post("/api/get-user-info", { token });
         setUser(response.data);
         return response.data.id;
-      } catch (error) {
-        console.error("Error fetching user info", error);
+      } catch (err) {
+        const errorMessage = err.response.data.error
+          ? err.response.data.error
+          : "An error occurred. Please try again later.";
+        toast.error(errorMessage);
         setLoading(false);
       }
     };
@@ -29,8 +32,11 @@ const WaitingRequestsPage = () => {
         });
         setInvitations(response.data.invitations);
         setLoading(false);
-      } catch (error) {
-        console.error("Error fetching pending invitations", error);
+      } catch (err) {
+        const errorMessage = err.response.data.error
+          ? err.response.data.error
+          : "An error occurred. Please try again later.";
+        toast.error(errorMessage);
         setLoading(false);
       }
     };
@@ -53,8 +59,11 @@ const WaitingRequestsPage = () => {
       setInvitations((prevInvitations) =>
         prevInvitations.filter((inv) => inv.id !== invitation_id)
       );
-    } catch (error) {
-      console.error(`Error ${response}ing invitation`, error);
+    } catch (err) {
+      const errorMessage = err.response.data.error
+        ? err.response.data.error
+        : "An error occurred. Please try again later.";
+      toast.error(errorMessage);
     }
   };
 

@@ -14,7 +14,7 @@ export default function RequestResetPasswordPage() {
     }
   }, [router]);
 
-  const [email, setEmail] = useState(""); // Set initial state to empty string
+  const [email, setEmail] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();

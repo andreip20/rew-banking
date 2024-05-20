@@ -17,7 +17,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated()) {
-      router.push("/dashboard"); // Redirect to dashboard if already logged in
+      router.push("/dashboard");
     }
   }, [router]);
 
@@ -27,7 +27,6 @@ export default function LoginPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Check if username contains special characters
     if (/[^a-zA-Z0-9]/.test(username)) {
       toast.error("Username should not contain special characters.");
       return;
