@@ -43,7 +43,7 @@ export async function POST(req) {
 
       const resetLink = `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password?token=${resetToken}`;
       await transporter.sendMail({
-        from: "your_email_address",
+        from: "rewbanking",
         to: email,
         subject: "Password Reset",
         text: `You have requested to reset your password. Click on the following link to reset your password: ${resetLink}`,

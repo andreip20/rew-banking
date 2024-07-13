@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import query from "../../query";
+import { encrypt, decrypt } from "../../../utils/cryptoUtil";
 
 export async function POST(req) {
   if (!req.body) {
@@ -19,14 +20,25 @@ export async function POST(req) {
       );
     }
 
+    const encryptedUsername = encrypt(username);
+
     const transactions = await query(
       "SELECT * FROM transactions WHERE receiver = ? AND status = 'pending'",
-      [username]
+      [encryptedUsername]
     );
 
-    return new NextResponse(JSON.stringify({ transactions }), {
-      status: 200,
-    });
+    const decryptedTransactions = transactions.map((transaction) => ({
+      ...transaction,
+      receiver: decrypt(transaction.receiver),
+      sender: decrypt(transaction.sender),
+    }));
+
+    return new NextResponse(
+      JSON.stringify({ transactions: decryptedTransactions }),
+      {
+        status: 200,
+      }
+    );
   } catch (err) {
     console.error("Error fetching pending transactions:", err);
     return new NextResponse(JSON.stringify({ error: "Server error" }), {

@@ -19,8 +19,9 @@ export default function DashboardLayout({ children }) {
   if (loading) {
     return <div>Loading...</div>;
   }
-
-  return (
+  return loading ? (
+    <div>Loading...</div>
+  ) : (
     <div className="w-[1800px] h-[800px] bg-white rounded-3xl shadow-cyan-950 shadow-2xl p-4 flex flex-col items-center">
       <Navbar />
       {children}

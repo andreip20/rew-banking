@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import query from "../../query";
+import { encrypt } from "../../../utils/cryptoUtil";
 
 export async function POST(req) {
   if (!req.body) {
@@ -52,10 +53,20 @@ export async function POST(req) {
       );
     }
 
+    const encryptedSenderUsername = encrypt(senderUsername);
+    const encryptedReceiverUsername = encrypt(username);
+
     const insertResult = await query(
       `INSERT INTO transactions (receiver, sender, amount, status, type, creation_date, expiry_date, description)
       VALUES (?, ?, ?, ?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY), ?)`,
-      [username, senderUsername, amount, "pending", action, description]
+      [
+        encryptedReceiverUsername,
+        encryptedSenderUsername,
+        amount,
+        "pending",
+        action,
+        description,
+      ]
     );
 
     if (insertResult.affectedRows === 1) {

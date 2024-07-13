@@ -72,7 +72,7 @@ export async function POST(request) {
 
     const verificationLink = `${process.env.NEXT_PUBLIC_BASE_URL}/api/verify?token=${verificationToken}`;
     await transporter.sendMail({
-      from: "your_email_address",
+      from: "rewbanking",
       to: email,
       subject: "Account Verification",
       text: `Please verify your account by clicking on the link below:\n${verificationLink}`,

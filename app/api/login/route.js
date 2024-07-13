@@ -38,6 +38,15 @@ export async function POST(request) {
         const user = results[0];
         const hashedPassword = user.password;
 
+        if (user.verified !== 1) {
+          return resolve(
+            NextResponse.json(
+              { error: "User is not verified" },
+              { status: 403 }
+            )
+          );
+        }
+
         try {
           const match = await bcrypt.compare(password, hashedPassword);
           if (!match) {

@@ -133,6 +133,7 @@ const TransactionForm = () => {
   async function processTransaction(dataToSend) {
     let response;
     try {
+      // Send userId and username along with other data
       response = await axios.post("/api/create-transaction", {
         dataToSend,
         userId,
@@ -199,6 +200,7 @@ const TransactionForm = () => {
               {errors[name] && <p className="text-red-500">{errors[name]}</p>}
             </div>
           ))}
+
           <div className="col-span-2 flex gap-6 justify-center items-center">
             <label className="p-3">
               <input

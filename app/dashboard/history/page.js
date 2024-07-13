@@ -6,8 +6,8 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import TransactionHistoryCard from "../../../components/TransactionHistoryCard";
 import { toast, Toaster } from "react-hot-toast";
-import paymentPic from "../../../public/undraw_mobile_payments_re_7udl.svg"; // Example image, replace with actual image
-import { exportToCsv } from "../../exportToCsv"; // Adjust the path as needed
+import paymentPic from "../../../public/undraw_mobile_payments_re_7udl.svg";
+import { exportToCsv } from "../../exportToCsv";
 
 const History = () => {
   const [transactions, setTransactions] = useState([]);
@@ -44,13 +44,15 @@ const History = () => {
     try {
       const response = await axios.post("/api/get-user-info", { token });
       if (response.status === 200) {
-        const username = response.data.username;
-        setCurrentUser(username);
+        const userId = response.data.id;
+        setCurrentUser(response.data.username);
+
         const transactionsResponse = await axios.post(
           "/api/get-all-transactions",
-          { username }
+          { userId }
         );
         if (transactionsResponse.status === 200) {
+          console.log(transactionsResponse.data.transactions);
           setTransactions(transactionsResponse.data.transactions);
           setFilteredTransactions(transactionsResponse.data.transactions);
         }

@@ -4,6 +4,7 @@ import ChatWindow from "../../../components/ChatWindow";
 import Link from "next/link";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { Toaster, toast } from "react-hot-toast";
 
 const ContactsPage = () => {
   const [user, setUser] = useState(null);
@@ -75,6 +76,7 @@ const ContactsPage = () => {
 
   return (
     <div className="flex h-[82%] w-full mt-[15px] p-6 rounded-xl ml-8">
+      <Toaster></Toaster>
       <div className="w-1/4 p-4 bg-gray-100 flex flex-col relative justify-between rounded-xl border border-blue-600">
         <div>
           <h1 className="text-xl font-bold mb-[10px] text-blue-500">

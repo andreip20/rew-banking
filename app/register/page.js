@@ -72,6 +72,10 @@ const RegistrationForm = () => {
   const validateInput = (name, value) => {
     switch (name) {
       case "username":
+        if (/[^a-zA-Z0-9]/.test(value)) {
+          return "This field should not special characters.";
+        }
+        break;
       case "firstName":
       case "lastName":
         if (/[^a-zA-Z]/.test(value)) {
@@ -79,8 +83,8 @@ const RegistrationForm = () => {
         }
         break;
       case "phoneNumber":
-        if (/[^0-9]/.test(value)) {
-          return "Phone number should only contain digits.";
+        if (!/^\d{1,10}$/.test(value)) {
+          return "Phone number should only contain digits and be maximum 10 digits long.";
         }
         break;
       case "password":
@@ -132,6 +136,17 @@ const RegistrationForm = () => {
     event.preventDefault();
     let valid = true;
     let newErrors = {};
+
+    setFormData({
+      username: "",
+      email: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      address: "",
+      password: "",
+      repeatPassword: "",
+    });
 
     Object.keys(formData).forEach((key) => {
       const error = validateInput(key, formData[key]);

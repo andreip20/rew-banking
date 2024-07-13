@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { Toaster, toast } from "react-hot-toast";
 
 const WaitingRequestsPage = () => {
   const [user, setUser] = useState(null);
@@ -77,6 +78,7 @@ const WaitingRequestsPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center p-4 w-full">
+      <Toaster></Toaster>
       <h1 className="text-2xl font-bold mb-4 text-blue-500">
         Waiting Requests
       </h1>

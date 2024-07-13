@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import query from "../../query";
+import { decrypt, encrypt } from "../../../utils/cryptoUtil";
 
 export async function POST(req) {
   if (!req.body) {
@@ -21,7 +22,7 @@ export async function POST(req) {
       );
     }
 
-    const [transactionResults] = await query(
+    const transactionResults = await query(
       "SELECT * FROM transactions WHERE id = ? AND status = 'pending'",
       [transactionId]
     );
@@ -35,20 +36,25 @@ export async function POST(req) {
       );
     }
 
-    const transaction = transactionResults;
+    const transaction = transactionResults[0];
     const { receiver, sender, amount, type } = transaction;
 
+    const decryptedReceiver = decrypt(receiver);
+    const decryptedSender = decrypt(sender);
+
     if (type === "deposit") {
-      // Update balances: Add amount to receiver's balance
       await query("UPDATE users SET balance = balance + ? WHERE username = ?", [
         amount,
-        receiver,
+        decryptedReceiver,
+      ]);
+      await query("UPDATE users SET balance = balance - ? WHERE username = ?", [
+        amount,
+        decryptedSender,
       ]);
     } else if (type === "request") {
-      // Check receiver's balance
-      const [receiverResults] = await query(
+      const receiverResults = await query(
         "SELECT balance FROM users WHERE username = ?",
-        [receiver]
+        [decryptedReceiver]
       );
 
       if (receiverResults.length === 0) {
@@ -60,7 +66,7 @@ export async function POST(req) {
         );
       }
 
-      const receiverBalance = receiverResults.balance;
+      const receiverBalance = receiverResults[0].balance;
       if (receiverBalance < amount) {
         return new NextResponse(
           JSON.stringify({ error: "Insufficient funds in receiver's account" }),
@@ -70,19 +76,17 @@ export async function POST(req) {
         );
       }
 
-      // Update balances: Subtract amount from receiver's balance, add to sender's balance
       await query("UPDATE users SET balance = balance - ? WHERE username = ?", [
         amount,
-        receiver,
+        decryptedReceiver,
       ]);
 
       await query("UPDATE users SET balance = balance + ? WHERE username = ?", [
         amount,
-        sender,
+        decryptedSender,
       ]);
     }
 
-    // Update transaction status to 'accepted'
     await query("UPDATE transactions SET status = 'accepted' WHERE id = ?", [
       transactionId,
     ]);

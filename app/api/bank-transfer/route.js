@@ -1,5 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+// pages/api/bank-transfer.js
+import { NextResponse } from "next/server";
 import query from "../../query";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req) {
   if (!req.body) {
@@ -10,13 +14,27 @@ export async function POST(req) {
   }
 
   try {
-    const { dataToSend, userId } = await req.json();
+    const { paymentMethodId, amount, action, userId } = await req.json();
 
-    if (!dataToSend || !userId) {
+    if (!paymentMethodId || !amount || !action || !userId) {
       return new NextResponse(
         JSON.stringify({ error: "Missing data in the request" }),
         { status: 400 }
       );
+    }
+
+    const amountInCents = Math.round(parseFloat(amount) * 100);
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amountInCents,
+      currency: "ron",
+      payment_method: paymentMethodId,
+      confirm: true,
+      payment_method_types: ["card"],
+    });
+
+    if (paymentIntent.status !== "succeeded") {
+      throw new Error("Payment failed");
     }
 
     const [resultsForBalance] = await query(
@@ -33,33 +51,16 @@ export async function POST(req) {
     const userBalance = Number(
       resultsForBalance.balance === null ? 0 : resultsForBalance.balance
     );
-    const amount = Number(dataToSend.amount);
+    const transactionAmount = parseFloat(amount);
 
-    if (dataToSend.action === "deposit") {
-      const newBalance = Number(userBalance + amount);
-      const updateResult = await query(
-        "UPDATE users SET balance = ? WHERE id = ?",
-        [newBalance, userId]
-      );
-
-      if (updateResult.affectedRows === 1) {
-        return new NextResponse(JSON.stringify({ success: true }), {
-          status: 200,
-        });
-      } else {
-        return new NextResponse(
-          JSON.stringify({ error: "Unable to update balance" }),
-          { status: 500 }
-        );
-      }
-    } else if (dataToSend.action === "withdraw") {
-      if (userBalance < amount) {
+    if (action === "deposit") {
+      if (userBalance < transactionAmount) {
         return new NextResponse(
           JSON.stringify({ error: "Insufficient funds" }),
           { status: 403 }
         );
       }
-      const newBalance = Number(userBalance - amount);
+      const newBalance = userBalance - transactionAmount;
       const updateResult = await query(
         "UPDATE users SET balance = ? WHERE id = ?",
         [newBalance, userId]
@@ -70,10 +71,21 @@ export async function POST(req) {
           status: 200,
         });
       } else {
-        return new NextResponse(
-          JSON.stringify({ error: "Unable to update balance" }),
-          { status: 500 }
-        );
+        throw new Error("Unable to update balance");
+      }
+    } else if (action === "withdraw") {
+      const newBalance = userBalance + transactionAmount;
+      const updateResult = await query(
+        "UPDATE users SET balance = ? WHERE id = ?",
+        [newBalance, userId]
+      );
+
+      if (updateResult.affectedRows === 1) {
+        return new NextResponse(JSON.stringify({ success: true }), {
+          status: 200,
+        });
+      } else {
+        throw new Error("Unable to update balance");
       }
     } else {
       return new NextResponse(
@@ -83,8 +95,11 @@ export async function POST(req) {
     }
   } catch (err) {
     console.error("Error in transaction:", err);
-    return new NextResponse(JSON.stringify({ error: "Server error" }), {
-      status: 500,
-    });
+    return new NextResponse(
+      JSON.stringify({ error: err.message || "Server error" }),
+      {
+        status: 500,
+      }
+    );
   }
 }
